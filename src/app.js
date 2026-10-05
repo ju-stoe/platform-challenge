@@ -81,6 +81,21 @@ app.patch("/tasks/:id", (req, res) => {
   return res.status(200).json(task);
 });
 
+app.delete("/tasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const taskIndex = tasks.findIndex((task) => task.id === id);
+
+  if (taskIndex === -1) {
+    return res.status(404).json({
+      error: "Task not found"
+    });
+  }
+
+  tasks.splice(taskIndex, 1);
+
+  return res.status(204).send();
+});
+
 app.get("/total", (_req, res) => {
   const items = [
     { price: 10, quantity: 2 },

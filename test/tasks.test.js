@@ -146,3 +146,40 @@ test("PATCH /tasks/:id returns 400 for invalid input", async (t) => {
  
   assert.equal(response.status, 400);
 });
+
+test("DELETE /tasks/:id deletes an existing task", async (t) => {
+  const server = app.listen(0);
+
+  t.after(() => {
+    server.close();
+  });
+
+  const port = server.address().port;
+
+  const response = await fetch(`http://127.0.0.1:${port}/tasks/2`, {
+    method: "DELETE"
+  });
+
+  assert.equal(response.status, 204);
+
+  const getResponse = await fetch(`http://127.0.0.1:${port}/tasks`);
+  const tasks = await getResponse.json();
+
+  assert.equal(tasks.some((task) => task.id === 2), false);
+});
+
+test("DELETE /tasks/:id returns 404 for an unknown task", async (t) => {
+  const server = app.listen(0);
+
+  t.after(() => {
+    server.close();
+  });
+
+  const port = server.address().port;
+
+  const response = await fetch(`http://127.0.0.1:${port}/tasks/999`, {
+    method: "DELETE"
+  });
+
+  assert.equal(response.status, 404);
+});
