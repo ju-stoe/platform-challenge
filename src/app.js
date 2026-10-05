@@ -58,6 +58,29 @@ app.post("/tasks", (req, res) => {
   return res.status(201).json(newTask);
 });
 
+app.patch("/tasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const task = tasks.find((task) => task.id === id);
+ 
+  if (!task) {
+    return res.status(404).json({
+      error: "Task not found"
+    });
+  }
+ 
+  const { completed } = req.body;
+ 
+  if (typeof completed !== "boolean") {
+    return res.status(400).json({
+      error: "Completed must be a boolean"
+    });
+  }
+ 
+  task.completed = completed;
+ 
+  return res.status(200).json(task);
+});
+
 app.get("/total", (_req, res) => {
   const items = [
     { price: 10, quantity: 2 },
