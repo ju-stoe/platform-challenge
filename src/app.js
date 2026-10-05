@@ -2,6 +2,18 @@ const express = require("express");
 
 const app = express();
 const port = process.env.PORT || 3000;
+const tasks = [
+  {
+    id: 1,
+    title: "Learn GitHub workflow",
+    completed: false
+  },
+  {
+    id: 2,
+    title: "Set up CI",
+    completed: true
+  }
+];
 
 function calculateTotal(items) {
   // INTENTIONAL DEFECT: students must diagnose this using the tests.
@@ -17,6 +29,10 @@ app.get("/", (_req, res) => {
 
 app.get("/health", (_req, res) => {
   res.json({ status: "healthy" });
+});
+
+app.get("/tasks", (_req, res) => {
+  res.status(200).json(tasks);
 });
 
 app.get("/total", (_req, res) => {
