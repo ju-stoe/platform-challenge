@@ -1,6 +1,7 @@
 const express = require("express");
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 3000;
 const tasks = [
   {
@@ -33,6 +34,28 @@ app.get("/health", (_req, res) => {
 
 app.get("/tasks", (_req, res) => {
   res.status(200).json(tasks);
+});
+
+app.post("/tasks", (req, res) => {
+  const { title } = req.body;
+
+  if (!title || typeof title !== "string" || title.trim() === "") {
+    return res.status(400).json({
+      error: "Title is required"
+    });
+  }
+
+  const newTask = {
+    id: tasks.length > 0
+      ? Math.max(...tasks.map((task) => task.id)) + 1
+      : 1,
+    title: title.trim(),
+    completed: false
+  };
+
+  tasks.push(newTask);
+
+  return res.status(201).json(newTask);
 });
 
 app.get("/total", (_req, res) => {
